@@ -132,7 +132,7 @@ module TopologicalInventory
         :ref                       => :manager_ref,
       )
 
-      relationships_inventory = Inventory.new(
+      cross_ref_inventory = Inventory.new(
         :name        => "OCP",
         :source      => "9a874712-9a55-49ab-a46a-c823acc35503",
         :schema      => Schema.new(:name => "Default"),
@@ -144,7 +144,46 @@ module TopologicalInventory
         ]
       )
 
-      File.write(File.join(test_inventory_dir, "cross_ref_inventory.json"), JSON.dump(relationships_inventory.to_hash))
+      File.write(File.join(test_inventory_dir, "cross_ref_inventory.json"), JSON.dump(cross_ref_inventory.to_hash))
+
+      tags_inventory = Inventory.new(
+        :name        => "OCP",
+        :source      => "9a874712-9a55-49ab-a46a-c823acc35503",
+        :schema      => Schema.new(:name => "Default"),
+        :collections => [
+          InventoryCollection.new(
+            :name => :container_groups,
+            :data => [
+              ContainerGroup.new(
+                :source_ref        => "a40e2927-77b8-487e-92bb-63f32989b015",
+                :name              => "kafka-1-hqtjh",
+                :resource_version  => "1432020",
+              )
+            ]
+          ),
+          InventoryCollection.new(
+            :name => :taggings,
+            :data => [
+              Tagging.new(
+                :taggable => InventoryObjectLazy.new(
+                  :inventory_collection_name => :container_groups,
+                  :reference                 => {:source_ref => "a40e2927-77b8-487e-92bb-63f32989b015"},
+                  :ref                       => :manager_ref
+                )
+              )
+            ]
+          ),
+          InventoryCollection.new(
+            :name => :tags,
+            :data => [
+              Tag.new(
+              )
+            ]
+          ),
+        ]
+      )
+
+      File.write(File.join(test_inventory_dir, "tags_inventory.json"), JSON.dump(tags_inventory.to_hash))
     end
   end
 end

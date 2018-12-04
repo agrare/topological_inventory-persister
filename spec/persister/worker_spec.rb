@@ -86,5 +86,14 @@ describe TopologicalInventory::Persister::Worker do
         expect(container_node.lives_on).not_to be_nil
       end
     end
+
+    context "with tags" do
+      let(:inventory) { JSON.load(File.read(test_inventory_dir.join("tags_inventory.json"))) }
+
+      it "creates tags and taggings on a container group" do
+        container_group = source.container_groups.first
+        expect(container_group.tags).not_to be_nil
+      end
+    end
   end
 end
